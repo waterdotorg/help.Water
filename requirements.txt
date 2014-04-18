@@ -1,0 +1,4 @@
+Django==1.6.2
+South==0.8.4
+django-custom-user==0.4
+gunicorn==18.0
