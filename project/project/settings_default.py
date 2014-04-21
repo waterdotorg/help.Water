@@ -57,6 +57,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'south',
     'custom_user',
+    'waterauth',
     'custom',
 )
 
@@ -121,3 +122,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 AUTH_USER_MODEL = 'custom.User'
+
+AUTHENTICATION_BACKENDS = ('waterauth.backends.LDAPBackend',)
+
+LOGIN_REDIRECT_URL = '/dashboard/'
