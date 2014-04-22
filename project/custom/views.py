@@ -11,4 +11,4 @@ def homepage(request):
 
 @login_required
 def dashboard(request):
-    return
+    return render(request, 'dashboard.html')

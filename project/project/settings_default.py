@@ -58,6 +58,8 @@ INSTALLED_APPS = (
     'south',
     'custom_user',
     'waterauth',
+    'bootstrap3',
+    'tickets',
     'custom',
 )
 

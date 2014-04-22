@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^tickets/', include('tickets.urls')),
     (r'', include('waterauth.urls')),
     (r'', include('custom.urls')),
 )

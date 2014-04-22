@@ -15,11 +15,11 @@ class Ticket(models.Model):
     COMPLETED_STATUS = 'CP'
 
     STATUS_CODES = (
-        UNASSIGNED_STATUS, 'Unassigned',
-        ASSIGNED_STATUS, 'Assigned',
-        IN_PROGRESS_STATUS, 'In Progress',
-        DELETED_STATUS, 'Deleted',
-        COMPLETED_STATUS, 'Completed',
+        (UNASSIGNED_STATUS, 'Unassigned'),
+        (ASSIGNED_STATUS, 'Assigned'),
+        (IN_PROGRESS_STATUS, 'In Progress'),
+        (DELETED_STATUS, 'Deleted'),
+        (COMPLETED_STATUS, 'Completed'),
     )
 
     NOW_PRIORITY = 'NW'
@@ -27,14 +27,14 @@ class Ticket(models.Model):
     SOMEDAY_PRIORITY = 'SD'
 
     PRIORITY_CODES = (
-        NOW_PRIORITY, 'Now',
-        SOON_PRIORITY, 'Soon',
-        SOMEDAY_PRIORITY, 'Someday',
+        (NOW_PRIORITY, 'Now'),
+        (SOON_PRIORITY, 'Soon'),
+        (SOMEDAY_PRIORITY, 'Someday'),
     )
-    author = models.ForeignKey(settings.AUTH_USER_MODEL)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='author')
     department = models.ForeignKey(Department, blank=True, null=True)
     assigned = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True,
-                                 null=True)
+                                 null=True, related_name='assigned')
     title = models.CharField(max_length=100)
     description = models.TextField()
     status = models.CharField(max_length=2, choices=STATUS_CODES,
@@ -43,7 +43,7 @@ class Ticket(models.Model):
                                 default=SOON_PRIORITY, db_index=True)
     priortiy_admin = models.IntegerField(blank=True, null=True)
     watchers = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True,
-                                      null=True)
+                                      null=True, related_name='watchers')
     minutes_worked = models.IntegerField(blank=True, null=True)
     due_date = models.DateTimeField(blank=True, null=True)
     closed_date = models.DateTimeField(blank=True, null=True)
@@ -75,7 +75,7 @@ class Ticket(models.Model):
 
 
 class TicketComment(models.Model):
-    ticket = models.ForeginKey(Ticket)
+    ticket = models.ForeignKey(Ticket)
     author = models.ForeignKey(settings.AUTH_USER_MODEL)
     content = models.TextField()
     created_date = models.DateTimeField(auto_now_add=True)
