@@ -59,6 +59,7 @@ INSTALLED_APPS = (
     'custom_user',
     'waterauth',
     'bootstrap3',
+    'bootstrap_pagination',
     'tickets',
     'custom',
 )
@@ -120,7 +121,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.media",
     "django.core.context_processors.static",
     "django.core.context_processors.tz",
-    "django.contrib.messages.context_processors.messages"
+    "django.contrib.messages.context_processors.messages",
+    "django.core.context_processors.request",
 )
 
 AUTH_USER_MODEL = 'custom.User'

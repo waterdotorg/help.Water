@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% load bootstrap_pagination %}
+{% load staticfiles %}
+
+{% block title %}Tickets{% endblock %}
+
+
+{% block main %}
+<table class="table">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th class="hidden-xs">Assigned</th>
+      <th>Priority</th>
+      <th>Status</th>
+      <th class="hidden-xs">Created</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for ticket in tickets_pager %}
+    <tr>
+      <td><a href="{{ ticket.get_absolute_url }}">{{ ticket.title }}</a></td>
+      <td class="hidden-xs">{{ ticket.assigned.last_name }}</td>
+      <td>{{ ticket.priority }}</td>
+      <td>{{ ticket.status }}</td>
+      <td class="hidden-xs">{{ ticket.created_date|date:"Y-m-d" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+<div class="pagination">
+  {% bootstrap_paginate tickets_pager range=3 %}
+</div>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if tickets_pager.has_previous %}
+          <a href="?page={{ tickets_pager.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        <span class="current">
+          Page {{ tickets_pager.number }} of {{ tickets_pager.paginator.num_pages }}
+        </span>
+
+        {% if tickets_pager.has_next %}
+          <a href="?page={{ tickets_pager.next_page_number }}">Next</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock %}

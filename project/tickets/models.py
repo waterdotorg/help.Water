@@ -1,6 +1,7 @@
 import datetime
 
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.timezone import utc
 
@@ -26,11 +27,11 @@ class Ticket(models.Model):
     SOON_PRIORITY = 'SN'
     SOMEDAY_PRIORITY = 'SD'
 
-    PRIORITY_CODES = (
+    PRIORITY_CODES = [
         (NOW_PRIORITY, 'Now'),
         (SOON_PRIORITY, 'Soon'),
         (SOMEDAY_PRIORITY, 'Someday'),
-    )
+    ]
     author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='author')
     department = models.ForeignKey(Department, blank=True, null=True)
     assigned = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True,
@@ -72,6 +73,9 @@ class Ticket(models.Model):
         except Ticket.DoesNotExist:
             pass
         super(Ticket, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('tickets.views.ticket_detail', args=[str(self.pk)])
 
 
 class TicketComment(models.Model):

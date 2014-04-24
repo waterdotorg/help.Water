@@ -1,1 +1,7 @@
 /* Forms */
+.field-help {
+  margin-top: 4px; 
+}
+#ticket-create label {
+  display: none;
+}
