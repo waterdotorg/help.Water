@@ -22,3 +22,6 @@ class User(AbstractEmailUser):
 
     def __unicode__(self):
         return u'%s' % self.email
+
+    def get_full_name(self):
+        return u'%s %s' % (self.first_name, self.last_name)

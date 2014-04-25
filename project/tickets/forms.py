@@ -16,3 +16,7 @@ class TicketForm(forms.Form):
     department = forms.ChoiceField(choices=department_choices)
     priority = forms.ChoiceField(choices=PRIORITY_CHOICES_EMPTY)
     due_date = forms.DateTimeField(required=False)
+
+
+class TicketCommentForm(forms.Form):
+    content = forms.CharField(widget=forms.Textarea)

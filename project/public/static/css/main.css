@@ -5,3 +5,37 @@
 #ticket-create label {
   display: none;
 }
+#tcf {
+  margin: 20px 0;
+}
+#tcf .form-controls {
+  margin-top: 10px;
+}
+
+/* Pagination */
+.pagination-wrapper {
+  text-align: center;
+}
+
+/* Tickets */
+.label-status-ua {
+  background-color: #999;
+}
+.label-status-as {
+  background-color: #5BC0DE;
+}
+.label-status-ip {
+  background-color: #428BCA;
+}
+.label-status-dl {
+  background-color: #D9534F;
+}
+.label-status-cp {
+  background-color: #5CB85C;
+}
+.ticket-comment-control {
+  margin-bottom: 10px;
+}
+.ticket-comment {
+  margin: 20px;
+}

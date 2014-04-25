@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% load django_markdown %}
+
+{% block title %}{{ ticket.title }}{% endblock %}
+
+{% block main %}
+<div class="ticket">
+  <h3>{{ ticket.title }}</h3>
+  <p>{{ ticket.description|markdown }}</p>
+  <table class="table">
+    <tbody>
+      <tr>
+        <td class="field-label">Status</td>
+        <td class="field-value"><span class="label label-status-{{ ticket.status.lower }}">{{ ticket.get_status }}</span></td>
+      </tr>
+      <tr>
+        <td class="field-label">Priority</td>
+        <td class="field-value"><span class="label label-priority-{{ ticket.priority.lower }}">{{ ticket.get_priority }}</span></td>
+      </tr>
+      <tr>
+        <td class="field-label">Assigned</td>
+        <td class="field-value">{{ ticket.assigned.get_full_name }}</td>
+      </tr>
+      <tr>
+        <td class="field-label">Author</td>
+        <td class="field-value">{{ ticket.author.get_full_name }}</td>
+      </tr>
+      <tr>
+        <td class="field-label">Department</td>
+        <td class="field-value">{{ ticket.department.title }}</td>
+      </tr>
+      <tr>
+        <td class="field-label">Watching</td>
+        <td class="field-value">{% for watcher in watchers %}{{ watcher.get_full_name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+      </tr>
+      <tr>
+        <td class="field-label">Minutes Worked</td>
+        <td class="field-value">{{ ticket.minutes_worked }}</td>
+      </tr>
+      <tr>
+        <td class="field-label">Created Date</td>
+        <td class="field-value">{{ ticket.created_date|date:"Y-m-d" }}</td>
+      </tr>
+      <tr>
+        <td class="field-label">Updated Date</td>
+        <td class="field-value">{{ ticket.updated_date|date:"Y-m-d" }}</td>
+      </tr>
+      <tr>
+        <td class="field-label">Due Date</td>
+        <td class="field-value">{{ ticket.due_date|date:"Y-m-d" }}</td>
+      </tr>
+      <tr>
+        <td class="field-label">Closed Date</td>
+        <td class="field-value">{{ ticket.closed_date|date:"Y-m-d" }}</td>
+      </tr>
+      <tr>
+        <td class="field-label">Resolution</td>
+        <td class="field-value">{{ ticket.resolution|markdown }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="ticket-comment-control">
+  <a class="btn btn-primary" href="#tcf">Add Comment</a>
+</div>
+
+<div class="ticket-comments">
+  {% for ticket_comment in ticket_comments %}
+    <div class="ticket-comment">
+      {{ ticket_comment.content|markdown }}
+      <p class="text-muted">{{ ticket_comment.author.get_full_name }} on {{ ticket_comment.created_date|date:"Y-m-d" }}</p>
+    </div>
+  {% endfor %}
+</div>
+
+<div id="tcf" class="ticket-comment-form">
+  <form role="form" action="" method="POST">{% csrf_token %}
+    {{ form.non_field_errors }}
+    <textarea class="form-control" cols="40" id="id_content" name="content" placeholder="Add Comment" required="required" rows="10" title=""></textarea>
+    <div class="form-group form-controls">
+      <button type="submit" class="btn btn-default">Submit</button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

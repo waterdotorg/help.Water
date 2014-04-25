@@ -61,6 +61,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'bootstrap_pagination',
     'tickets',
+    'django_markdown',
     'custom',
 )
 

@@ -77,6 +77,12 @@ class Ticket(models.Model):
     def get_absolute_url(self):
         return reverse('tickets.views.ticket_detail', args=[str(self.pk)])
 
+    def get_status(self):
+        return dict(self.STATUS_CODES).get(self.status)
+
+    def get_priority(self):
+        return dict(self.PRIORITY_CODES).get(self.priority)
+
 
 class TicketComment(models.Model):
     ticket = models.ForeignKey(Ticket)
@@ -86,4 +92,4 @@ class TicketComment(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return u'%s' % self.title[:50]
+        return u'%s' % self.content[:50]

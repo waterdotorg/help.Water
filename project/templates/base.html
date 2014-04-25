@@ -28,16 +28,22 @@
 
     {% if messages %}
     <div class="alert-wrapper">
-      {% for message in messages %}
-      <div class="alert alert-dismissable{% if message.tags %} {{ message.tags }}{% endif %}">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        {{ message }}
+      <div class="container">
+        {% for message in messages %}
+        <div class="alert alert-dismissable{% if message.tags %} {{ message.tags }}{% endif %}">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+          {{ message }}
+        </div>
         {% endfor %}
       </div>
     </div>
     {% endif %}
 
-    {% block main %}{% endblock %}
+    {% block main_wrapper %}
+    <div class="container">
+      {% block main %}{% endblock %}
+    </div>
+    {% endblock %}
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
