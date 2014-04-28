@@ -11,9 +11,9 @@
   <thead>
     <tr>
       <th>Title</th>
-      <th class="hidden-xs">Assigned</th>
-      <th>Priority</th>
       <th>Status</th>
+      <th>Priority</th>
+      <th class="hidden-xs">Assigned</th>
       <th class="hidden-xs">Created</th>
     </tr>
   </thead>
@@ -21,9 +21,9 @@
     {% for ticket in tickets_pager %}
     <tr>
       <td><a href="{{ ticket.get_absolute_url }}">{{ ticket.title }}</a></td>
+      <td><span class="label label-status-{{ ticket.status.lower }}">{{ ticket.get_status }}</span></td>
+      <td><span class="label label-priority-{{ ticket.priority.lower }}">{{ ticket.get_priority }}</span></td>
       <td class="hidden-xs">{{ ticket.assigned.last_name }}</td>
-      <td>{{ ticket.priority }}</td>
-      <td>{{ ticket.status }}</td>
       <td class="hidden-xs">{{ ticket.created_date|date:"Y-m-d" }}</td>
     </tr>
     {% endfor %}

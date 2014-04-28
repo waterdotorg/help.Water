@@ -6,8 +6,25 @@
 
 {% block main %}
 <div class="ticket">
-  <h3>{{ ticket.title }}</h3>
-  <p>{{ ticket.description|markdown }}</p>
+  <h3 class="page-header">{{ ticket.title }}</h3>
+  <ul id="ticket-menu" class="nav nav-pills">
+    <li class="pull-right">
+      <a class="ttip" title="Comments" data-toggle="tooltip" data-placement="top" href="{{ ticket.get_absolute_url }}#ticket-comments-wrapper">
+        <span class="glyphicon glyphicon-comment"></span>
+      </a>
+    </li>
+    <li class="pull-right">
+      <a class="ttip" title="Edit" data-toggle="tooltip" data-placement="top" href="{{ ticket.get_absolute_edit_url }}">
+        <span class="glyphicon glyphicon-edit"></span>
+      </a>
+    </li>
+    <li class="pull-right">
+      <a class="ttip" title="View" data-toggle="tooltip" data-placement="top" href="{{ ticket.get_absolute_url }}">
+        <span class="glyphicon glyphicon-file"></span>
+      </a>
+    </li>
+  </ul>
+  {{ ticket.description|markdown }}
   <table class="table">
     <tbody>
       <tr>
@@ -63,14 +80,14 @@
 </div>
 
 <div class="ticket-comment-control">
-  <a class="btn btn-primary" href="#tcf">Add Comment</a>
+  <a class="btn btn-default" href="#tcf">Add Comment</a>
 </div>
 
-<div class="ticket-comments">
+<div id="ticket-comments-wrapper" class="ticket-comments">
   {% for ticket_comment in ticket_comments %}
-    <div class="ticket-comment">
+    <div class="ticket-comment clearfix">
       {{ ticket_comment.content|markdown }}
-      <p class="text-muted">{{ ticket_comment.author.get_full_name }} on {{ ticket_comment.created_date|date:"Y-m-d" }}</p>
+      <p class="text-muted pull-right">{{ ticket_comment.author.get_full_name }} on {{ ticket_comment.created_date|date:"Y-m-d" }}</p>
     </div>
   {% endfor %}
 </div>
@@ -80,7 +97,7 @@
     {{ form.non_field_errors }}
     <textarea class="form-control" cols="40" id="id_content" name="content" placeholder="Add Comment" required="required" rows="10" title=""></textarea>
     <div class="form-group form-controls">
-      <button type="submit" class="btn btn-default">Submit</button>
+      <button type="submit" class="btn btn-primary">Submit</button>
     </div>
   </form>
 </div>

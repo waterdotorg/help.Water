@@ -15,13 +15,13 @@ class Ticket(models.Model):
     DELETED_STATUS = 'DL'
     COMPLETED_STATUS = 'CP'
 
-    STATUS_CODES = (
+    STATUS_CODES = [
         (UNASSIGNED_STATUS, 'Unassigned'),
         (ASSIGNED_STATUS, 'Assigned'),
         (IN_PROGRESS_STATUS, 'In Progress'),
         (DELETED_STATUS, 'Deleted'),
         (COMPLETED_STATUS, 'Completed'),
-    )
+    ]
 
     NOW_PRIORITY = 'NW'
     SOON_PRIORITY = 'SN'
@@ -76,6 +76,9 @@ class Ticket(models.Model):
 
     def get_absolute_url(self):
         return reverse('tickets.views.ticket_detail', args=[str(self.pk)])
+
+    def get_absolute_edit_url(self):
+        return reverse('tickets.views.ticket_edit', args=[str(self.pk)])
 
     def get_status(self):
         return dict(self.STATUS_CODES).get(self.status)

@@ -34,12 +34,5 @@
 {% block footer_js %}
   <script src="{% static "js/moment.min.js" %}"></script>
   <script src="{% static "js/bootstrap-datetimepicker.min.js" %}"></script>
-  <script>
-    $(function () {
-      $('#due_date').datetimepicker({
-        'useSeconds': false,
-        'format': 'YYYY-MM-DD HH:MM'
-      });
-    });
-  </script>
+  <script src="{% static "js/date-field.js" %}"></script>
 {% endblock %}

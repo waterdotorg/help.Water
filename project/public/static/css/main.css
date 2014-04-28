@@ -18,6 +18,12 @@
 }
 
 /* Tickets */
+.ticket .page-header {
+  margin-bottom: 0px;
+}
+.ticket .field-label {
+  color: #999;
+}
 .label-status-ua {
   background-color: #999;
 }
@@ -33,9 +39,25 @@
 .label-status-cp {
   background-color: #5CB85C;
 }
+.label-priority-nw {
+  background-color: #F2DEDE;
+  color: #bfbfbf;
+}
+.label-priority-sn {
+  background-color: #FCF8E3;
+  color: #bfbfbf;
+}
+.label-priority-sd {
+  background-color: #D9EDF7;
+  color: #bfbfbf;
+}
 .ticket-comment-control {
   margin-bottom: 10px;
 }
 .ticket-comment {
-  margin: 20px;
+  background-color: #F7F7F9;
+  border: 1px solid #E1E1E8;
+  border-radius: 6px;
+  margin: 20px 0;
+  padding: 20px 20px 10px 20px;
 }
