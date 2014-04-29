@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block main %}
+  <h3 class="page-header">Title Matches</h3>
+  {% for ticket in title_results %}
+    <div class="ticket-result">
+      <p><a href="{{ ticket.get_absolute_url }}">{{ ticket.title }}</a></p>
+      <p>{{ ticket.description }}</p>
+    </div>
+  {% empty %}
+    <p>No results available.</p>
+  {% endfor %}
+
+  <h3 class="page-header">Content Matches</h3>
+  {% for ticket in content_results %}
+    <div class="ticket-result">
+      <p><a href="{{ ticket.get_absolute_url }}">{{ ticket.title }}</a></p>
+      <p>{{ ticket.description }}</p>
+    </div>
+  {% empty %}
+    <p>No results available.</p>
+  {% endfor %}
+{% endblock %}

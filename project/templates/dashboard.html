@@ -3,5 +3,54 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block main %}
+<h3 class="page-header">Assigned Tickets</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Status</th>
+      <th>Priority</th>
+      <th class="hidden-xs">Created</th>
+      <th class="hidden-xs">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for ticket in assigned_tickets %}
+    <tr>
+      <td><a href="{{ ticket.get_absolute_url }}">{{ ticket.title }}</a></td>
+      <td><span class="label label-status-{{ ticket.status.lower }}">{{ ticket.get_status }}</span></td>
+      <td><span class="label label-priority-{{ ticket.priority.lower }}">{{ ticket.get_priority }}</span></td>
+      <td class="hidden-xs">{{ ticket.created_date|date:"Y-m-d" }}</td>
+      <td class="hidden-xs"><a class="ticket-action" href="{{ ticket.get_absolute_edit_url }}"><span class="glyphicon glyphicon-edit"></span></a></td>
+    </tr>
+    {% empty %}
+    <p>No assigned tickets available.</p>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h3 class="page-header">Recent Tickets</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Status</th>
+      <th>Priority</th>
+      <th class="hidden-xs">Assigned</th>
+      <th class="hidden-xs">Created</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for ticket in recent_tickets %}
+    <tr>
+      <td><a href="{{ ticket.get_absolute_url }}">{{ ticket.title }}</a></td>
+      <td><span class="label label-status-{{ ticket.status.lower }}">{{ ticket.get_status }}</span></td>
+      <td><span class="label label-priority-{{ ticket.priority.lower }}">{{ ticket.get_priority }}</span></td>
+      <td class="hidden-xs">{{ ticket.assigned.last_name }}</td>
+      <td class="hidden-xs">{{ ticket.created_date|date:"Y-m-d" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
 {% endblock %}

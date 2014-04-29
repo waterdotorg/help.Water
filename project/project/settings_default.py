@@ -1,3 +1,5 @@
+from django.contrib.messages import constants as messages
+
 """
 Django settings for project project.
 
@@ -131,3 +133,7 @@ AUTH_USER_MODEL = 'custom.User'
 AUTHENTICATION_BACKENDS = ('waterauth.backends.LDAPBackend',)
 
 LOGIN_REDIRECT_URL = '/dashboard/'
+
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger'
+}

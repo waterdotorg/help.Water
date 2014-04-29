@@ -96,3 +96,9 @@ class TicketComment(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.content[:50]
+
+    def save(self, *args, **kwargs):
+        super(TicketComment, self).save(*args, **kwargs)
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        self.ticket.updated_date = now
+        self.ticket.save()

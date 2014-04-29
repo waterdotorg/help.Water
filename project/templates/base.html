@@ -30,7 +30,7 @@
     <div class="alert-wrapper">
       <div class="container">
         {% for message in messages %}
-        <div class="alert alert-dismissable{% if message.tags %} {{ message.tags }}{% endif %}">
+        <div class="alert alert-dismissable alert-{% if message.tags %}{{ message.tags }}{% endif %}">
           <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
           {{ message }}
         </div>
