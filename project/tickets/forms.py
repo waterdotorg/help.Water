@@ -27,7 +27,7 @@ class TicketCommentForm(forms.Form):
 class TicketEditForm(forms.Form):
     User = get_user_model()
 
-    user_choices = [('', '---')] + [(user.pk, user.get_full_name()) for user in User.objects.filter(is_active=True)]
+    user_choices = [('', '---')] + [(user.pk, user.get_full_name()) for user in User.objects.filter(is_active=True).order_by('first_name')]
 
     department = forms.ChoiceField(choices=DEPARTMENT_CHOICES, required=False)
     assigned = forms.ChoiceField(choices=user_choices, required=False)
