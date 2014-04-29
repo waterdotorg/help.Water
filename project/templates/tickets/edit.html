@@ -9,6 +9,8 @@
 {% endblock %}
 
 {% block main %}
+{% include "fragments/tickets/menu.html" %}
+
 <form id="ticket-edit" role="form" action="" method="POST">{% csrf_token %}
   {{ form.non_field_errors }}
   {% bootstrap_field form.title %}
@@ -23,7 +25,7 @@
     {{ form.due_date.errors }}
     <label class="control-label">Due Date</label>
     <div class="input-group date" id="due_date">
-      <input id="id_due_date" name="due_date" type="text" class="form-control" placeholder="Due Date" />
+      <input id="id_due_date" value="{% if form.initial.due_date %}{{ form.initial.due_date|date:"Y-m-d H:i" }}{% endif %}" name="due_date" type="text" class="form-control" placeholder="Due Date" />
       <span class="input-group-addon">
         <span class="glyphicon glyphicon-calendar"></span>
       </span>
@@ -34,7 +36,7 @@
     {{ form.closed_date.errors }}
     <label class="control-label">Closed Date</label>
     <div class="input-group date" id="closed_date">
-      <input id="id_closed_date" name="closed_date" type="text" class="form-control" placeholder="Closed Date" />
+      <input id="id_closed_date" value="{% if form.initial.closed_date %}{{ form.initial.closed_date|date:"Y-m-d H:i" }}{% endif %}" name="closed_date" type="text" class="form-control" placeholder="Closed Date" />
       <span class="input-group-addon">
         <span class="glyphicon glyphicon-calendar"></span>
       </span>

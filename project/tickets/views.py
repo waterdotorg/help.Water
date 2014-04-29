@@ -115,6 +115,7 @@ def ticket_detail(request, pk=None):
         'selected_tab': selected_tab,
         'ticket': ticket,
         'ticket_comments': ticket_comments,
+        'watchers': ticket.watchers.all(),
     }
     return render(request, 'tickets/detail.html', dict_context)
 
@@ -147,9 +148,10 @@ def ticket_edit(request, pk=None):
 
             watchers_list = []
             for pk in form.cleaned_data.get('watchers'):
-                if isinstance(pk, (int, long)):
-                    watchers_list.append(pk)
-            watchers = User.objects.filter(pk__in=watchers_list)
+                try:
+                    watchers_list.append(int(pk))
+                except:
+                    pass
 
             ticket.department = department
             ticket.assigned = assigned
@@ -157,18 +159,16 @@ def ticket_edit(request, pk=None):
             ticket.description = form.cleaned_data.get('description')
             ticket.status = form.cleaned_data.get('status')
             ticket.priority = form.cleaned_data.get('priority')
-            ticket.watchers = watchers
+            ticket.watchers = watchers_list
             ticket.minutes_worked = form.cleaned_data.get('minutes_worked')
             ticket.due_date = form.cleaned_data.get('due_date')
             ticket.closed_date = form.cleaned_data.get('closed_date')
-            ticket.resolution = form.cleaned_data.get('resoultion', '')
+            ticket.resolution = form.cleaned_data.get('resolution')
             ticket.save()
 
             messages.success(request, 'Ticket updated.')
             return redirect(ticket.get_absolute_url())
     else:
-        watchers = [(user.pk, user.get_full_name()) for user in User.objects.filter(pk__in=ticket.watchers.values_list('pk'))]
-
         if ticket.department:
             department_pk = ticket.department.pk
         else:
@@ -186,7 +186,7 @@ def ticket_edit(request, pk=None):
             'description': ticket.description,
             'status': ticket.status,
             'priority': ticket.priority,
-            'watchers': watchers,
+            'watchers': ticket.watchers.values_list('pk', flat=True),
             'minutes_worked': ticket.minutes_worked,
             'due_date': ticket.due_date,
             'closed_date': ticket.closed_date,
@@ -197,6 +197,7 @@ def ticket_edit(request, pk=None):
     dict_context = {
         'form': form,
         'ticket': ticket,
+        'selected_tab': 'edit',
     }
 
     return render(request, 'tickets/edit.html', dict_context)

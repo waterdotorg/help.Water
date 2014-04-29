@@ -1,0 +1,17 @@
+<ul id="ticket-menu" class="nav nav-pills">
+  <li class="pull-right">
+    <a class="ttip" title="Comments" data-toggle="tooltip" data-placement="bottom" href="{{ ticket.get_absolute_url }}#ticket-comments-wrapper">
+      <span class="glyphicon glyphicon-comment"></span>
+    </a>
+  </li>
+  <li class="pull-right">
+    <a class="ttip" title="Edit" data-toggle="tooltip" data-placement="bottom" href="{{ ticket.get_absolute_edit_url }}">
+      <span class="glyphicon glyphicon-edit"></span>
+    </a>
+  </li>
+  <li class="pull-right">
+    <a class="ttip" title="View" data-toggle="tooltip" data-placement="bottom" href="{{ ticket.get_absolute_url }}">
+      <span class="glyphicon glyphicon-file"></span>
+    </a>
+  </li>
+</ul>

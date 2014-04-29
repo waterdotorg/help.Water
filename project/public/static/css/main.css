@@ -23,6 +23,7 @@
 }
 .ticket .field-label {
   color: #999;
+  width: 200px;
 }
 .label-status-ua {
   background-color: #999;
