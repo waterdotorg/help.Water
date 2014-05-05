@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+{% block title %}Edit Comment{% endblock %}
+
+{% block main %}
+<div class="ticket-comment-form">
+  <form role="form" action="" method="POST">{% csrf_token %}
+    {{ form.non_field_errors }}
+    {% bootstrap_field form.content %}
+    <div class="form-group form-controls">
+      <button type="submit" class="btn btn-primary">Submit</button>
+      <a class="btn btn-link" href="{{ ticket_comment.ticket.get_absolute_url }}">Cancel</a>
+    </div>
+  </form>
+</div>
+
+{% include "fragments/tickets/comments.html" %}
+{% endblock %}

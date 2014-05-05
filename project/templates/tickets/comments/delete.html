@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% load django_markdown %}
+
+{% block title %}Delete Comment{% endblock %}
+
+{% block main %}
+<div class="ticket-comment-form">
+  <h3 class="page-header">Are you sure you wish to delete this comment?</h3>
+  <form role="form" action="" method="POST">{% csrf_token %}
+    {{ form.non_field_errors }}
+    {{ form.as_p }}
+    <div class="form-group form-controls">
+      <button type="submit" class="btn btn-danger">Delete</button>
+      <a class="btn btn-link" href="{{ ticket_comment.ticket.get_absolute_url }}">Cancel</a>
+    </div>
+  </form>
+  {{ ticket_comment.content|markdown }}
+</div>
+
+{% include "fragments/tickets/comments.html" %}
+{% endblock %}

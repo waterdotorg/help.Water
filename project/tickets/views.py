@@ -3,12 +3,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import render, redirect
-from django.http import Http404
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import Http404, HttpResponseForbidden
 
 from custom.models import Department
 from tickets.models import Ticket, TicketComment
-from tickets.forms import TicketForm, TicketCommentForm, TicketEditForm
+from tickets.forms import TicketForm, TicketCommentForm, TicketCommentDeleteForm, TicketEditForm
 
 
 @login_required
@@ -201,3 +201,61 @@ def ticket_edit(request, pk=None):
     }
 
     return render(request, 'tickets/edit.html', dict_context)
+
+
+@login_required
+def ticket_comment_edit(request, pk=None):
+    ticket_comment = get_object_or_404(TicketComment, pk=pk)
+    ticket_comments = (TicketComment.objects.select_related()
+                       .filter(ticket=ticket_comment.ticket)
+                       .order_by('-created_date'))
+
+    if ticket_comment.author.pk != request.user.pk and not request.user.is_superuser:
+        return HttpResponseForbidden('<p>You do not have access to this page.</p>')
+
+    if request.method == 'POST':
+        form = TicketCommentForm(request.POST)
+        if form.is_valid():
+            ticket_comment.content = form.cleaned_data.get('content')
+            ticket_comment.save()
+            messages.success(request, 'Comment updated successfully.')
+            return redirect(ticket_comment.ticket.get_absolute_url())
+    else:
+        initial = {
+            'content': ticket_comment.content,
+        }
+        form = TicketCommentForm(initial=initial)
+
+    dict_context = {
+        'form': form,
+        'ticket_comment': ticket_comment,
+        'ticket_comments': ticket_comments,
+    }
+
+    return render(request, 'tickets/comments/edit.html', dict_context)
+
+
+@login_required
+def ticket_comment_delete(request, pk=None):
+    ticket_comment = get_object_or_404(TicketComment, pk=pk)
+
+    if ticket_comment.author.pk != request.user.pk and not request.user.is_superuser:
+        return HttpResponseForbidden('<p>You do not have access to this page.</p>')
+
+    if request.method == 'POST':
+        form = TicketCommentDeleteForm(request.POST)
+        if form.is_valid():
+            redirect_url = ticket_comment.ticket.get_absolute_url()
+            ticket_comment.delete()
+            messages.success(request, 'Comment deleted successfully.')
+            return redirect(redirect_url)
+    else:
+        initial = {'pk': ticket_comment.pk}
+        form = TicketCommentDeleteForm(initial=initial)
+
+    dict_context = {
+        'form': form,
+        'ticket_comment': ticket_comment,
+    }
+
+    return render(request, 'tickets/comments/delete.html', dict_context)

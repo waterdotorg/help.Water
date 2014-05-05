@@ -24,6 +24,10 @@ class TicketCommentForm(forms.Form):
     content = forms.CharField(widget=forms.Textarea)
 
 
+class TicketCommentDeleteForm(forms.Form):
+    pk = forms.CharField(required=False, widget=forms.HiddenInput)
+
+
 class TicketEditForm(forms.Form):
     User = get_user_model()
 

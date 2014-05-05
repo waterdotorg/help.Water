@@ -67,14 +67,7 @@
   <a class="btn btn-default" href="#tcf">Add Comment</a>
 </div>
 
-<div id="ticket-comments-wrapper" class="ticket-comments">
-  {% for ticket_comment in ticket_comments %}
-    <div class="ticket-comment clearfix">
-      {{ ticket_comment.content|markdown }}
-      <p class="text-muted pull-right">{{ ticket_comment.author.get_full_name }} on {{ ticket_comment.created_date|date:"Y-m-d" }}</p>
-    </div>
-  {% endfor %}
-</div>
+{% include "fragments/tickets/comments.html" %}
 
 <div id="tcf" class="ticket-comment-form">
   <form role="form" action="" method="POST">{% csrf_token %}

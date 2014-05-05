@@ -1,0 +1,17 @@
+{% load django_markdown %}
+
+<div id="ticket-comments-wrapper" class="ticket-comments">
+  {% for ticket_comment in ticket_comments %}
+    <div class="ticket-comment clearfix">
+      {{ ticket_comment.content|markdown }}
+      <p class="text-muted pull-right">{{ ticket_comment.author.get_full_name }} on {{ ticket_comment.created_date|date:"Y-m-d" }}</p>
+      {% if request.user.is_superuser or request.user.pk == ticket_comment.author.pk %}
+      <p class="text-muted pull-left ticket-comment-controls">
+        <a class="glyphicon glyphicon-edit" href="{% url 'ticket_comment_edit' pk=ticket_comment.pk %}"></a>
+        <a class="glyphicon glyphicon-remove" href="{% url 'ticket_comment_delete' pk=ticket_comment.pk %}"></a>
+      </p>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
