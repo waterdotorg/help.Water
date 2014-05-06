@@ -1,3 +1,8 @@
+/* Nav */
+.navbar-brand {
+  padding: 5px 15px; 
+}
+
 /* Forms */
 .field-help {
   margin-top: 4px; 

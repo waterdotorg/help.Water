@@ -15,8 +15,9 @@ def homepage(request):
 
 @login_required
 def dashboard(request):
-    assigned_tickets = (Ticket.objects.filter(assigned=request.user)
-                        .order_by('created_date'))
+    assigned_tickets = Ticket.objects.filter(
+        Q(status=Ticket.ASSIGNED_STATUS) | Q(status=Ticket.IN_PROGRESS_STATUS),
+        assigned=request.user).order_by('created_date')
     recent_tickets = Ticket.objects.all().order_by('-created_date')[:10]
     dict_context = {
         'assigned_tickets': assigned_tickets,
@@ -28,7 +29,6 @@ def dashboard(request):
 @login_required
 def search(request):
     q = request.GET.get('q')
-    messages.success(request, q)
 
     if not q:
         messages.error(request, 'Please enter a search term.')
@@ -45,3 +45,8 @@ def search(request):
     }
 
     return render(request, 'search.html', dict_context)
+
+
+@login_required
+def settings_user(request):
+    return

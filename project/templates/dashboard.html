@@ -3,6 +3,7 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block main %}
+<p><a href="{% url 'ticket_create' %}" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-plus"></span> Create New Ticket</a></p>
 <h3 class="page-header">Assigned Tickets</h3>
 <table class="table">
   <thead>

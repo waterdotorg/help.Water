@@ -132,6 +132,8 @@ AUTH_USER_MODEL = 'custom.User'
 
 AUTHENTICATION_BACKENDS = ('waterauth.backends.LDAPBackend',)
 
+LOGIN_URL = '/auth/signin'
+
 LOGIN_REDIRECT_URL = '/dashboard/'
 
 MESSAGE_TAGS = {

@@ -1,8 +1,10 @@
 import datetime
 
 from django.conf import settings
+from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.template.loader import render_to_string
 from django.utils.timezone import utc
 
 from custom.models import Department
@@ -56,6 +58,7 @@ class Ticket(models.Model):
         return u'%s' % self.title
 
     def save(self, *args, **kwargs):
+        new_ticket = False
         now = datetime.datetime.utcnow().replace(tzinfo=utc)
         try:
             old = Ticket.objects.get(pk=self.pk)
@@ -71,8 +74,10 @@ class Ticket(models.Model):
             elif self.assigned != old.assigned:
                 self.status = self.ASSIGNED_STATUS
         except Ticket.DoesNotExist:
-            pass
+            new_ticket = True
         super(Ticket, self).save(*args, **kwargs)
+        if new_ticket:
+            self.email_init()
 
     def get_absolute_url(self):
         return reverse('tickets.views.ticket_detail', args=[str(self.pk)])
@@ -85,6 +90,22 @@ class Ticket(models.Model):
 
     def get_priority(self):
         return dict(self.PRIORITY_CODES).get(self.priority)
+
+    def email_init(self):
+        ticket_emails = (TicketEmail.active_objects
+                         .exclude(email=self.author.email)
+                         .values_list('email', flat=True))
+        if ticket_emails:
+            dict_context = {
+                'ticket': self,
+            }
+            message = render_to_string('tickets/email/init.txt', dict_context)
+            send_mail(
+                'New Ticket Received',
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                list(ticket_emails)
+            )
 
 
 class TicketComment(models.Model):
@@ -102,3 +123,28 @@ class TicketComment(models.Model):
         now = datetime.datetime.utcnow().replace(tzinfo=utc)
         self.ticket.updated_date = now
         self.ticket.save()
+
+
+class TicketEmailManager(models.Manager):
+    def get_queryset(self):
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        return super(TicketEmailManager, self).get_queryset().filter(
+            models.Q(end_date__isnull=True) | models.Q(end_date__gte=now),
+            start_date__lte=now,
+            enabled=True,
+        )
+
+
+class TicketEmail(models.Model):
+    email = models.EmailField()
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField(blank=True, null=True)
+    enabled = models.BooleanField(default=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+
+    objects = models.Manager()
+    active_objects = TicketEmailManager()
+
+    def __unicode__(self):
+        return u'%s' % self.email
