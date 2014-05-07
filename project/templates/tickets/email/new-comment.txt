@@ -1,0 +1,11 @@
+New comment posted from {{ ticket_comment.author.get_full_name }}.
+
+https://help.water.org{{ ticket_comment.ticket.get_absolute_url }}
+
+{{ ticket_comment.content }}
+
+----
+
+{{ ticket_comment.ticket.title }}
+
+{{ ticket_comment.ticket.description }}

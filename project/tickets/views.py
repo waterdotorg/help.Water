@@ -1,12 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404, HttpResponseForbidden
 
-from custom.models import Department
 from tickets.models import Ticket, TicketComment
 from tickets.forms import TicketForm, TicketCommentForm, TicketCommentDeleteForm, TicketEditForm
 
@@ -118,8 +116,6 @@ def ticket_detail(request, pk=None):
 
 @login_required
 def ticket_edit(request, pk=None):
-    User = get_user_model()
-
     try:
         ticket = Ticket.objects.prefetch_related().get(pk=pk)
     except Ticket.DoesNotExist:
@@ -128,34 +124,13 @@ def ticket_edit(request, pk=None):
     if request.method == 'POST':
         form = TicketEditForm(request.POST)
         if form.is_valid():
-            try:
-                department = Department.objects.get(
-                    pk=form.cleaned_data.get('department')
-                )
-            except:
-                department = None
-
-            try:
-                assigned = User.objects.get(
-                    pk=form.cleaned_data.get('assigned')
-                )
-            except:
-                assigned = None
-
-            watchers_list = []
-            for pk in form.cleaned_data.get('watchers'):
-                try:
-                    watchers_list.append(int(pk))
-                except:
-                    pass
-
-            ticket.department = department
-            ticket.assigned = assigned
+            ticket.department = form.cleaned_data.get('department')
+            ticket.assigned = form.cleaned_data.get('assigned')
             ticket.title = form.cleaned_data.get('title')
             ticket.description = form.cleaned_data.get('description')
             ticket.status = form.cleaned_data.get('status')
             ticket.priority = form.cleaned_data.get('priority')
-            ticket.watchers = watchers_list
+            ticket.watchers = form.cleaned_data.get('watchers')
             ticket.minutes_worked = form.cleaned_data.get('minutes_worked')
             ticket.due_date = form.cleaned_data.get('due_date')
             ticket.closed_date = form.cleaned_data.get('closed_date')

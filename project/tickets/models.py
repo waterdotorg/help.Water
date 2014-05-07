@@ -125,10 +125,40 @@ class TicketComment(models.Model):
         return u'%s' % self.content[:50]
 
     def save(self, *args, **kwargs):
+        new = False
+
+        try:
+            TicketComment.objects.get(pk=self.pk)
+        except TicketComment.DoesNotExist:
+            new = True
+
         super(TicketComment, self).save(*args, **kwargs)
+
         now = datetime.datetime.utcnow().replace(tzinfo=utc)
         self.ticket.updated_date = now
         self.ticket.save()
+
+        if new:
+            self.notify_watchers()
+
+    def notify_watchers(self):
+        watchers_qs = (self.ticket.watchers
+                       .exclude(id=self.author.pk)
+                       .values_list('email', flat=True))
+        if watchers_qs:
+            dict_context = {
+                'ticket_comment': self,
+            }
+            message = render_to_string(
+                'tickets/email/new-comment.txt',
+                dict_context,
+            )
+            send_mail(
+                'New Comment on %s' % self.ticket.title,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                list(watchers_qs),
+            )
 
 
 class TicketEmailManager(models.Manager):
