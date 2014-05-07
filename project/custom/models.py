@@ -19,6 +19,7 @@ class User(AbstractEmailUser):
     first_name = models.CharField(max_length=128, blank=True)
     last_name = models.CharField(max_length=128, blank=True)
     department = models.ForeignKey(Department, blank=True, null=True)
+    ticket_auto_watch = models.BooleanField(default=True)
 
     def __unicode__(self):
         return u'%s' % self.email

@@ -55,16 +55,9 @@ def ticket_create(request):
     if request.method == 'POST':
         form = TicketForm(request.POST)
         if form.is_valid():
-            try:
-                department = Department.objects.get(
-                    pk=form.cleaned_data.get('department')
-                )
-            except Department.DoesNotExist:
-                department = None
-
             ticket = Ticket(
                 author=request.user,
-                department=department,
+                department=form.cleaned_data.get('department'),
                 title=form.cleaned_data.get('title'),
                 description=form.cleaned_data.get('description'),
                 priority=form.cleaned_data.get('priority'),
@@ -74,7 +67,10 @@ def ticket_create(request):
             messages.success(request, 'Successfully created ticket.')
             return redirect('dashboard')
     else:
-        form = TicketForm()
+        initial = {}
+        if request.user.department:
+            initial.update({'department': request.user.department})
+        form = TicketForm(initial=initial)
 
     dict_context = {'form': form}
 

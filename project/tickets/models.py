@@ -76,8 +76,10 @@ class Ticket(models.Model):
         except Ticket.DoesNotExist:
             new_ticket = True
         super(Ticket, self).save(*args, **kwargs)
+
         if new_ticket:
             self.email_init()
+            self.watch_init()
 
     def get_absolute_url(self):
         return reverse('tickets.views.ticket_detail', args=[str(self.pk)])
@@ -106,6 +108,10 @@ class Ticket(models.Model):
                 settings.DEFAULT_FROM_EMAIL,
                 list(ticket_emails)
             )
+
+    def watch_init(self):
+        if self.author.ticket_auto_watch:
+            self.watchers.add(self.author)
 
 
 class TicketComment(models.Model):

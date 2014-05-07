@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.shortcuts import render, redirect
 
 from tickets.models import Ticket
+from custom.forms import SettingsForm
 
 
 def homepage(request):
@@ -49,4 +50,21 @@ def search(request):
 
 @login_required
 def settings_user(request):
-    return
+    if request.method == 'POST':
+        form = SettingsForm(request.POST)
+        if form.is_valid():
+            request.user.department = form.cleaned_data.get('department')
+            request.user.ticket_auto_watch = form.cleaned_data.get('ticket_auto_watch', '')
+            request.user.save()
+            messages.success(request, 'Successfully updated settings.')
+            return redirect('dashboard')
+    else:
+        initial = {
+            'department': request.user.department,
+            'ticket_auto_watch': request.user.ticket_auto_watch,
+        }
+        form = SettingsForm(initial=initial)
+
+    dict_context = {'form': form}
+
+    return render(request, 'settings.html', dict_context)
