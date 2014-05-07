@@ -81,6 +81,9 @@ class Ticket(models.Model):
             self.email_init()
             self.watch_init()
 
+        if self.assigned:
+            self.watch_assigned()
+
     def get_absolute_url(self):
         return reverse('tickets.views.ticket_detail', args=[str(self.pk)])
 
@@ -112,6 +115,10 @@ class Ticket(models.Model):
     def watch_init(self):
         if self.author.ticket_auto_watch:
             self.watchers.add(self.author)
+
+    def watch_assigned(self):
+        if self.assigned not in self.watchers.all():
+            self.watchers.add(self.assigned)
 
 
 class TicketComment(models.Model):
