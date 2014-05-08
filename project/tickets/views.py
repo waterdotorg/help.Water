@@ -5,7 +5,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404, HttpResponseForbidden
 
-from tickets.models import Ticket, TicketComment
+from tickets.models import Ticket, TicketComment, TicketAttachment
 from tickets.forms import TicketForm, TicketCommentForm, TicketCommentDeleteForm, TicketEditForm
 
 
@@ -62,6 +62,16 @@ def ticket_create(request):
                 due_date=form.cleaned_data.get('due_date')
             )
             ticket.save()
+
+            attachment_list = request.FILES.getlist('attachments')
+            for attachment in attachment_list:
+                ta = TicketAttachment(
+                    user=request.user,
+                    ticket=ticket,
+                    attachment=attachment,
+                )
+                ta.save()
+
             messages.success(request, 'Successfully created ticket.')
             return redirect('dashboard')
     else:
@@ -99,6 +109,9 @@ def ticket_detail(request, pk=None):
     ticket_comments = (TicketComment.objects.select_related()
                        .filter(ticket=ticket).order_by('-created_date'))
 
+    ticket_attachments = (TicketAttachment.objects.select_related()
+                          .filter(ticket=ticket).order_by('-created_date'))
+
     if 'ticket-comments-wrapper' in request.get_full_path():
         selected_tab = 'comments'
     else:
@@ -109,6 +122,7 @@ def ticket_detail(request, pk=None):
         'selected_tab': selected_tab,
         'ticket': ticket,
         'ticket_comments': ticket_comments,
+        'ticket_attachments': ticket_attachments,
         'watchers': ticket.watchers.all(),
     }
     return render(request, 'tickets/detail.html', dict_context)
@@ -120,6 +134,9 @@ def ticket_edit(request, pk=None):
         ticket = Ticket.objects.prefetch_related().get(pk=pk)
     except Ticket.DoesNotExist:
         raise Http404
+
+    ticket_attachments = (TicketAttachment.objects.select_related()
+                          .filter(ticket=ticket).order_by('-created_date'))
 
     if request.method == 'POST':
         form = TicketEditForm(request.POST)
@@ -136,6 +153,17 @@ def ticket_edit(request, pk=None):
             ticket.closed_date = form.cleaned_data.get('closed_date')
             ticket.resolution = form.cleaned_data.get('resolution')
             ticket.save()
+
+            attachment_list = request.FILES.getlist('attachments')
+            if attachment_list:
+                ticket_attachments.delete()
+            for attachment in attachment_list:
+                ta = TicketAttachment(
+                    user=request.user,
+                    ticket=ticket,
+                    attachment=attachment,
+                )
+                ta.save()
 
             messages.success(request, 'Ticket updated.')
             return redirect(ticket.get_absolute_url())
@@ -168,6 +196,7 @@ def ticket_edit(request, pk=None):
     dict_context = {
         'form': form,
         'ticket': ticket,
+        'ticket_attachments': ticket_attachments,
         'selected_tab': 'edit',
     }
 

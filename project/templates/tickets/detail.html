@@ -59,6 +59,10 @@
         <td class="field-label">Resolution</td>
         <td class="field-value">{{ ticket.resolution|markdown }}</td>
       </tr>
+      <tr>
+        <td class="field-label">Attachments</td>
+        <td class="field-value">{% for ticket_attachment in ticket_attachments %}<a href="{{ ticket_attachment.attachment.url }}">{{ ticket_attachment }}</a>{% if not forloop.last %}<br />{% endif %}{% endfor %}</td>
+      </tr>
     </tbody>
   </table>
 </div>

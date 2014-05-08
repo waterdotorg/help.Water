@@ -1,13 +1,19 @@
 import datetime
+import os
+import re
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.dispatch.dispatcher import receiver
+from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
 from django.utils.timezone import utc
 
 from custom.models import Department
+from custom.utils import md5sum
 
 
 class Ticket(models.Model):
@@ -191,3 +197,91 @@ class TicketEmail(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.email
+
+
+def get_upload_to(instance, filename):
+    """
+    Get the path which should be appended to MEDIA_ROOT to
+    determine the value of the url attribute.
+    """
+    prefix = getattr(settings, "FILE_STORAGE_PREFIX", "attachments")
+    app_model = u"_".join((instance._meta.app_label,
+                          instance._meta.object_name)).lower()
+    return u"/".join(map(str, (prefix, app_model, filename)))
+
+
+class TicketAttachment(models.Model):
+    ticket = models.ForeignKey(Ticket)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    attachment = models.FileField(upload_to=get_upload_to, db_index=True)
+
+    # Metadata about the file
+    mimetype = models.CharField(max_length=1000, blank=True, null=True)
+    slug = models.SlugField(max_length=1000, unique=True, blank=True,
+                            editable=False)
+    size = models.PositiveIntegerField(blank=True, editable=False)
+    checksum = models.CharField(max_length=32, blank=True, editable=False)
+
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return u'%s' % self.filename
+
+    @property
+    def filename(self):
+        return os.path.basename(self.attachment.name)
+
+    @property
+    def pre_slug(self):
+        """
+        Helper to create the string that gets slugified.
+        """
+        s = "-".join(map(str, (self._meta.object_name.lower(), self.pk,
+                               os.path.basename(self.attachment.name))))
+        return re.sub("[^\w+]", "-", s)
+
+    @property
+    def checksum_match(self):
+        return md5sum(self.attachment.file) == self.checksum
+
+    def clean(self):
+        """
+        This method is called before each save.
+        """
+        try:
+            self.size = self.attachment.size
+            if hasattr(self.attachment.file, "content_type"):
+                self.mimetype = self.attachment.file.content_type
+        except ValueError, e:
+            raise ValidationError(e.args[0])
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            super(TicketAttachment, self).save(*args, **kwargs)
+        self.slug = slugify(self.pre_slug)
+        self.checksum = md5sum(self.attachment.file)
+        super(TicketAttachment, self).save(force_update=True)
+
+
+###########
+# Signals #
+###########
+
+@receiver(models.signals.pre_save, sender=TicketAttachment)
+def pre_save_callback(sender, instance, **kwargs):
+    """
+    Run clean before each save to set some values
+    based on the uploaded attachment.
+    """
+    instance.clean()
+
+
+@receiver(models.signals.post_save, sender=TicketAttachment)
+def post_save_callback(sender, instance, created, **kwargs):
+    """
+    Sets a _created flag on the attachment instance to indicate
+    that this is a new attachment.
+    """
+    if created:
+        instance._created = True
