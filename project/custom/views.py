@@ -19,10 +19,16 @@ def dashboard(request):
     assigned_tickets = Ticket.objects.filter(
         Q(status=Ticket.ASSIGNED_STATUS) | Q(status=Ticket.IN_PROGRESS_STATUS),
         assigned=request.user).order_by('created_date')
+    watching_tickets = Ticket.objects.filter(
+        Q(status=Ticket.UNASSIGNED_STATUS) | Q(status=Ticket.ASSIGNED_STATUS) |
+        Q(status=Ticket.IN_PROGRESS_STATUS),
+        watchers=request.user.pk,
+    ).order_by('-updated_date')
     recent_tickets = Ticket.objects.all().order_by('-created_date')[:10]
     dict_context = {
         'assigned_tickets': assigned_tickets,
         'recent_tickets': recent_tickets,
+        'watching_tickets': watching_tickets,
     }
     return render(request, 'dashboard.html', dict_context)
 
