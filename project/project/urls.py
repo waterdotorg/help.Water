@@ -8,6 +8,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^tickets/', include('tickets.urls')),
     url('^markdown/', include('django_markdown.urls')),
+    url('^watch/', include('watch.urls')),
     (r'', include('waterauth.urls')),
     (r'', include('custom.urls')),
 )

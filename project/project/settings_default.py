@@ -65,6 +65,7 @@ INSTALLED_APPS = (
     'tickets',
     'django_markdown',
     'custom',
+    'watch',
 )
 
 MIDDLEWARE_CLASSES = (

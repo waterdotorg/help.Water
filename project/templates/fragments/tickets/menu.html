@@ -1,4 +1,11 @@
 <ul id="ticket-menu" class="nav nav-pills">
+  {% if selected_tab = 'comments' or selected_tab = 'view' %}
+  <li class="pull-right">
+    <a id="watch-ticket" class="ttip" title="{% if is_watching %}Unwatch{% else %}Watch{% endif %}" data-toggle="tooltip" data-placement="bottom" href="#">
+      <span class="glyphicon glyphicon-eye-{% if is_watching %}close{% else %}open{% endif %}"></span>
+    </a>
+  </li>
+  {% endif %}
   <li class="pull-right">
     <a class="ttip" title="Comments" data-toggle="tooltip" data-placement="bottom" href="{{ ticket.get_absolute_url }}#ticket-comments-wrapper">
       <span class="glyphicon glyphicon-comment"></span>

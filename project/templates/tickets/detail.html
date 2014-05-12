@@ -83,4 +83,9 @@
   </form>
 </div>
 
+
+<form id="watch-ticket-form" role="form" action="{% url 'watch_ticket_ajax' %}" method="POST">{% csrf_token %}
+  {{ watch_ticket_form.as_p }}
+</form>
+
 {% endblock %}

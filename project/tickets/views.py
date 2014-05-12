@@ -7,6 +7,7 @@ from django.http import Http404, HttpResponseForbidden
 
 from tickets.models import Ticket, TicketComment, TicketAttachment
 from tickets.forms import TicketForm, TicketCommentForm, TicketCommentDeleteForm, TicketEditForm
+from watch.forms import WatchTicketForm
 
 
 @login_required
@@ -117,13 +118,25 @@ def ticket_detail(request, pk=None):
     else:
         selected_tab = 'view'
 
+    ticket_watchers = ticket.watchers.all()
+
+    if request.user in ticket_watchers:
+        is_watching = True
+    else:
+        is_watching = False
+
+    initial = {'ticket_id': ticket.pk}
+    watch_ticket_form = WatchTicketForm(initial=initial, user=request.user)
+
     dict_context = {
         'form': form,
         'selected_tab': selected_tab,
         'ticket': ticket,
         'ticket_comments': ticket_comments,
         'ticket_attachments': ticket_attachments,
-        'watchers': ticket.watchers.all(),
+        'watchers': ticket_watchers,
+        'is_watching': is_watching,
+        'watch_ticket_form': watch_ticket_form,
     }
     return render(request, 'tickets/detail.html', dict_context)
 
