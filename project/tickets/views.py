@@ -76,7 +76,7 @@ def ticket_create(request):
             messages.success(request, 'Successfully created ticket.')
             return redirect('dashboard')
     else:
-        initial = {}
+        initial = {'priority': Ticket.SOON_PRIORITY}
         if request.user.department:
             initial.update({'department': request.user.department})
         form = TicketForm(initial=initial)

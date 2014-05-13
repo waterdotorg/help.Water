@@ -5,37 +5,9 @@
 {% block main %}
 <p><a href="{% url 'ticket_create' %}" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-plus"></span> Create New Ticket</a></p>
 
-<h3 class="page-header">Assigned Tickets</h3>
-{% if assigned_tickets %}
-<table class="table">
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Status</th>
-      <th>Priority</th>
-      <th class="hidden-xs">Created</th>
-      <th class="hidden-xs">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for ticket in assigned_tickets %}
-    <tr>
-      <td><a href="{{ ticket.get_absolute_url }}">{{ ticket.title }}</a></td>
-      <td><span class="label label-status-{{ ticket.status.lower }}">{{ ticket.get_status }}</span></td>
-      <td><span class="label label-priority-{{ ticket.priority.lower }}">{{ ticket.get_priority }}</span></td>
-      <td class="hidden-xs">{{ ticket.created_date|date:"Y-m-d" }}</td>
-      <td class="hidden-xs"><a class="ticket-action" href="{{ ticket.get_absolute_edit_url }}"><span class="glyphicon glyphicon-edit"></span></a></td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% else %}
-<p>No assigned tickets available.</p>
-{% endif %}
-
 <h3 class="page-header">Tickets Watching</h3>
 {% if watching_tickets %}
-<table class="table">
+<table class="table table-hover">
   <thead>
     <tr>
       <th>Title</th>
@@ -61,9 +33,37 @@
 <p>You aren't watching any tickets.</p>
 {% endif %}
 
+<h3 class="page-header">Assigned Tickets</h3>
+{% if assigned_tickets %}
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Status</th>
+      <th>Priority</th>
+      <th class="hidden-xs">Created</th>
+      <th class="hidden-xs">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for ticket in assigned_tickets %}
+    <tr>
+      <td><a href="{{ ticket.get_absolute_url }}">{{ ticket.title }}</a></td>
+      <td><span class="label label-status-{{ ticket.status.lower }}">{{ ticket.get_status }}</span></td>
+      <td><span class="label label-priority-{{ ticket.priority.lower }}">{{ ticket.get_priority }}</span></td>
+      <td class="hidden-xs">{{ ticket.created_date|date:"Y-m-d" }}</td>
+      <td class="hidden-xs"><a class="ticket-action" href="{{ ticket.get_absolute_edit_url }}"><span class="glyphicon glyphicon-edit"></span></a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No assigned tickets available.</p>
+{% endif %}
+
 <h3 class="page-header">Recent Tickets</h3>
 {% if recent_tickets %}
-<table class="table">
+<table class="table table-hover">
   <thead>
     <tr>
       <th>Title</th>

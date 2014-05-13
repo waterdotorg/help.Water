@@ -1,0 +1,11 @@
+Resolution: 
+{{ ticket.resolution }}
+
+https://help.water.org{{ ticket.get_absolute_url }}
+
+----
+
+{{ ticket.title }}
+
+{{ ticket.description }}
+

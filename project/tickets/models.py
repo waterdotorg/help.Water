@@ -75,10 +75,16 @@ class Ticket(models.Model):
             elif (self.status == self.COMPLETED_STATUS
                     and old.status != self.COMPLETED_STATUS):
                 self.closed_date = now
-            elif self.assigned is None and old.assigned is not None:
+
+            if self.assigned is None and old.assigned is not None:
                 self.status = self.UNASSIGNED_STATUS
             elif self.assigned != old.assigned:
                 self.status = self.ASSIGNED_STATUS
+
+            if not old.resolution and self.resolution:
+                if not self.closed_date:
+                    self.closed_date = now
+                self.status = self.COMPLETED_STATUS
         except Ticket.DoesNotExist:
             new_ticket = True
         super(Ticket, self).save(*args, **kwargs)
@@ -89,6 +95,9 @@ class Ticket(models.Model):
 
         if self.assigned:
             self.watch_assigned()
+
+        if not old.resolution and self.resolution:
+            self.email_resolved()
 
     def get_absolute_url(self):
         return reverse('tickets.views.ticket_detail', args=[str(self.pk)])
@@ -116,6 +125,21 @@ class Ticket(models.Model):
                 message,
                 settings.DEFAULT_FROM_EMAIL,
                 list(ticket_emails)
+            )
+
+    def email_resolved(self):
+        watcher_emails = self.watchers.all().values_list('email', flat=True)
+        if watcher_emails:
+            dict_context = {
+                'ticket': self,
+            }
+            message = render_to_string('tickets/email/resolved.txt',
+                                       dict_context)
+            send_mail(
+                'Ticket Resolved',
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                list(watcher_emails),
             )
 
     def watch_init(self):
