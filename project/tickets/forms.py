@@ -9,8 +9,13 @@ STATUS_CHOICES_EMPTY = [('', 'Set Ticket Status')] + Ticket.STATUS_CODES
 
 
 class TicketForm(forms.Form):
+    User = get_user_model()
+
     title = forms.CharField(label='Summary', max_length=100)
     description = forms.CharField(widget=forms.Textarea)
+    user = forms.ModelChoiceField(
+        queryset=User.objects.filter(is_active=True).order_by('first_name'),
+    )
     department = forms.ModelChoiceField(
         queryset=Department.objects.all().order_by('title'),
         empty_label="Select Your Department",
@@ -37,6 +42,9 @@ class TicketEditForm(forms.Form):
     assigned = forms.ModelChoiceField(
         queryset=User.objects.filter(is_active=True).order_by('first_name'),
         required=False,
+    )
+    user = forms.ModelChoiceField(
+        queryset=User.objects.filter(is_active=True).order_by('first_name'),
     )
     title = forms.CharField(label='Summary', max_length=100)
     description = forms.CharField(widget=forms.Textarea)

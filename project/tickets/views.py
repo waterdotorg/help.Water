@@ -56,6 +56,7 @@ def ticket_create(request):
         if form.is_valid():
             ticket = Ticket(
                 author=request.user,
+                user=form.cleaned_data.get('user'),
                 department=form.cleaned_data.get('department'),
                 title=form.cleaned_data.get('title'),
                 description=form.cleaned_data.get('description'),
@@ -76,7 +77,7 @@ def ticket_create(request):
             messages.success(request, 'Successfully created ticket.')
             return redirect('dashboard')
     else:
-        initial = {'priority': Ticket.SOON_PRIORITY}
+        initial = {'priority': Ticket.SOON_PRIORITY, 'user': request.user}
         if request.user.department:
             initial.update({'department': request.user.department})
         form = TicketForm(initial=initial)
@@ -156,6 +157,7 @@ def ticket_edit(request, pk=None):
         if form.is_valid():
             ticket.department = form.cleaned_data.get('department')
             ticket.assigned = form.cleaned_data.get('assigned')
+            ticket.user = form.cleaned_data.get('user')
             ticket.title = form.cleaned_data.get('title')
             ticket.description = form.cleaned_data.get('description')
             ticket.status = form.cleaned_data.get('status')
@@ -194,6 +196,7 @@ def ticket_edit(request, pk=None):
         initial = {
             'department': department_pk,
             'assigned': assigned_pk,
+            'user': ticket.user,
             'title': ticket.title,
             'description': ticket.description,
             'status': ticket.status,

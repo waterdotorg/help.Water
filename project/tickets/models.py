@@ -41,6 +41,7 @@ class Ticket(models.Model):
         (SOMEDAY_PRIORITY, 'Someday'),
     ]
     author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='author')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user')
     department = models.ForeignKey(Department, blank=True, null=True)
     assigned = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True,
                                  null=True, related_name='assigned')
@@ -92,12 +93,12 @@ class Ticket(models.Model):
         if new_ticket:
             self.email_init()
             self.watch_init()
+        else:
+            if not old.resolution and self.resolution:
+                self.email_resolved()
 
         if self.assigned:
             self.watch_assigned()
-
-        if not old.resolution and self.resolution:
-            self.email_resolved()
 
     def get_absolute_url(self):
         return reverse('tickets.views.ticket_detail', args=[str(self.pk)])

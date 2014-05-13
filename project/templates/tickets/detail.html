@@ -24,16 +24,20 @@
         <td class="field-value">{{ ticket.assigned.get_full_name }}</td>
       </tr>
       <tr>
+        <td class="field-label">Watching</td>
+        <td class="field-value">{% for watcher in watchers %}{{ watcher.get_full_name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+      </tr>
+      <tr>
         <td class="field-label">Author</td>
         <td class="field-value">{{ ticket.author.get_full_name }}</td>
       </tr>
       <tr>
-        <td class="field-label">Department</td>
-        <td class="field-value">{{ ticket.department.title }}</td>
+        <td class="field-label">User</td>
+        <td class="field-value">{{ ticket.user.get_full_name }}</td>
       </tr>
       <tr>
-        <td class="field-label">Watching</td>
-        <td class="field-value">{% for watcher in watchers %}{{ watcher.get_full_name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+        <td class="field-label">Department</td>
+        <td class="field-value">{{ ticket.department.title }}</td>
       </tr>
       <tr>
         <td class="field-label">Minutes Worked</td>
