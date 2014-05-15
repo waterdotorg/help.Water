@@ -38,6 +38,12 @@ class Command(BaseCommand):
                 mail_body = quopri.decodestring(data[0][1])
                 mes = email.message_from_string(mail_body)
                 full_name, email_address = email.utils.parseaddr(mes.get('From'))
+
+                if ('water.org' not in email_address or
+                        isinstance(mes.get_payload(), list)):
+                    m.store(num, '+FLAGS', '\\Deleted')
+                    continue
+
                 subject = mes.get('Subject', 'N/A')
                 mes_text = clean_html(mes.get_payload())
             except Exception, e:
