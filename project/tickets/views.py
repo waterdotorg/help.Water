@@ -183,18 +183,13 @@ def ticket_edit(request, pk=None):
             messages.success(request, 'Ticket updated.')
             return redirect(ticket.get_absolute_url())
     else:
-        if ticket.department:
-            department_pk = ticket.department.pk
-        else:
-            department_pk = None
-
         if ticket.assigned:
             assigned_pk = ticket.assigned.pk
         else:
             assigned_pk = None
 
         initial = {
-            'department': department_pk,
+            'department': ticket.department,
             'assigned': assigned_pk,
             'user': ticket.user,
             'title': ticket.title,
