@@ -3,11 +3,12 @@ import imaplib
 import quopri
 import time
 
+from django import db
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import mail_admins
 from django.core.management.base import BaseCommand
-from django import db
+from django.utils.encoding import smart_text
 from nltk import clean_html
 
 from tickets.models import Ticket
@@ -46,8 +47,8 @@ class Command(BaseCommand):
                         m.store(num, '+FLAGS', '\\Deleted')
                         continue
 
-                    subject = mes.get('Subject', 'N/A')
-                    mes_text = clean_html(mes.get_payload())
+                    subject = smart_text(mes.get('Subject', 'N/A'))
+                    mes_text = smart_text(clean_html(mes.get_payload()))
                 except Exception, e:
                     mail_admins('help.water error: Error with email sync', e)
                     continue
