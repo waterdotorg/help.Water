@@ -45,7 +45,7 @@ class Ticket(models.Model):
     department = models.ForeignKey(Department, blank=True, null=True)
     assigned = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True,
                                  null=True, related_name='assigned')
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=1000)
     description = models.TextField()
     status = models.CharField(max_length=2, choices=STATUS_CODES,
                               default=UNASSIGNED_STATUS, db_index=True)
