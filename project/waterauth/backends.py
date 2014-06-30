@@ -13,6 +13,7 @@ class LDAPBackend(object):
     supports_inactive_user = False
 
     def authenticate(self, username=None, password=None):
+        username = username.split('@')[0]
         try:
             active_directory_username = '%s@water.org' % username
             username = username.lower()
