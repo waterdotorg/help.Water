@@ -70,3 +70,8 @@
 .ticket-comment-controls a {
   margin-right: 10px;
 }
+.attachments-form-wrapper {
+    padding: 10px;
+    border: 1px solid #E1E1E8;
+    border-radius: 6px;
+}

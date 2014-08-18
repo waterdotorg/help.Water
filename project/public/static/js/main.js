@@ -74,14 +74,14 @@ $(document).ready(function () {
           },
           success: function(data, textStatus, jqXHR) {
               var c = $("#watch-ticket span").attr('class');
-              if (c == 'glyphicon glyphicon-eye-open') {
-                  $("#watch-ticket span").attr('class', 'glyphicon glyphicon-eye-close');
-                  $("#watch-ticket").attr('title', 'Unwatch')
-                                    .attr('data-original-title', 'Unwatch')
+              if (c == 'glyphicon glyphicon-star') {
+                  $("#watch-ticket span").attr('class', 'glyphicon glyphicon-star-empty');
+                  $("#watch-ticket").attr('title', 'Watch')
+                                    .attr('data-original-title', 'Watch')
                                     .tooltip('fixTitle');
               } else {
-                  $("#watch-ticket span").attr('class', 'glyphicon glyphicon-eye-open');
-                  $("#watch-ticket").attr('title', 'Watch')
+                  $("#watch-ticket span").attr('class', 'glyphicon glyphicon-star');
+                  $("#watch-ticket").attr('title', 'Unwatch')
                                     .attr('data-original-title', 'Unwatch')
                                     .tooltip('fixTitle');
               }
