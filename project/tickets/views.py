@@ -169,6 +169,9 @@ def ticket_edit(request, pk=None):
             ticket.resolution = form.cleaned_data.get('resolution')
             ticket.save()
 
+            if form.cleaned_data.get('remove_attachments'):
+                ticket_attachments.delete()
+
             attachment_list = request.FILES.getlist('attachments')
             if attachment_list:
                 ticket_attachments.delete()

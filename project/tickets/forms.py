@@ -58,3 +58,7 @@ class TicketEditForm(forms.Form):
     due_date = forms.DateTimeField(required=False)
     closed_date = forms.DateTimeField(required=False)
     resolution = forms.CharField(widget=forms.Textarea, required=False)
+    remove_attachments = forms.BooleanField(
+        label='Remove Attachments',
+        required=False,
+    )
